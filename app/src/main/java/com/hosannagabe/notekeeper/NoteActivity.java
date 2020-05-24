@@ -1,5 +1,6 @@
 package com.hosannagabe.notekeeper;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -12,11 +13,16 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 import java.util.List;
 
 public class NoteActivity extends AppCompatActivity {
+
+    public static final String NOTE_INFO = "com.hosannagabe.notekeeper.NOTE_INFO";
+    private NoteInfo mNote;
+    private boolean mIsNewNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +39,30 @@ public class NoteActivity extends AppCompatActivity {
         spinnerCourses.setAdapter(
                 adapterCourses
         );
+        
+        readDisplayValues();
+
+        EditText textNoteTitle = findViewById(R.id.text_note_title);
+        EditText textNoteText = findViewById(R.id.text_note_text);
+
+        if (!mIsNewNote) {
+            displayNote(spinnerCourses, textNoteTitle, textNoteText);
+        }
+    }
+
+    private void displayNote(Spinner spinnerCourses, EditText textNoteTitle, EditText textNoteText) {
+        List<CourseInfo> courses = DataManager.getInstance().getCourses();
+        int courseIndex = courses.indexOf(mNote.getCourse());
+        spinnerCourses.setSelection(courseIndex);
+        textNoteTitle.setText(mNote.getTitle());
+        textNoteText.setText(mNote.getText());
+    }
+
+    private void readDisplayValues() {
+        Intent intent = getIntent();
+        mNote = intent.getParcelableExtra(NOTE_INFO);
+        mIsNewNote = mNote == null;
+
     }
 
     @Override
