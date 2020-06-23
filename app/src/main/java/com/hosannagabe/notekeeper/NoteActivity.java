@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -17,6 +18,8 @@ import android.widget.Spinner;
 import java.util.List;
 
 public class NoteActivity extends AppCompatActivity {
+
+    private final String TAG = getClass().getSimpleName();
 
     public static final String NOTE_POSITION = "com.hosannagabe.notekeeper.NOTE_POSITION";
     public static final int POSITION_NOT_SET = -1;
@@ -63,6 +66,8 @@ public class NoteActivity extends AppCompatActivity {
 
         if (!mIsNewNote) {
             displayNote(mSpinnerCourses, mTextNoteTitle, mTextNoteText);
+
+            Log.d(TAG, "on create");
         }
     }
 
@@ -92,6 +97,7 @@ public class NoteActivity extends AppCompatActivity {
         if(mIsNewNote){
             createNewNote();
         }else {
+            Log.d(TAG, "mNotePosition: " +mNotePosition);
             mNote = DataManager.getInstance().getNotes().get(position);
         }
     }
@@ -145,6 +151,8 @@ public class NoteActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         if (mIsCancelling) {
+            Log.i(TAG, "cancelling note at position: " + mNotePosition);
+
             if(mIsNewNote) {
                 DataManager.getInstance().removeNote(mNotePosition);
             }
@@ -154,6 +162,9 @@ public class NoteActivity extends AppCompatActivity {
         } else {
             saveNote();
         }
+
+        Log.d(TAG, "on pause");
+
     }
 
     private void storePreviousNoteValues() {
